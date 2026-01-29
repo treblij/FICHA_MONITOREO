@@ -52,11 +52,11 @@ actividades = [
      "M- Se realizó la generación y carga del PRE PADRON en la carpeta compartida, luego del cierre del SISOPE", 
      "N- Se remitió a la UO el término del proceso del PRE-PADRON (cotejo masivo del PGH con la información de las entidades públicas)", 
      "O- Se remitió a la UTI el correo de validación del PRE PADRON",
-     "P- Se realizó la carga de la versión final del pre padrón en la carpeta compartida, de acuerdo al detalle siguiente:
-        •	Usuarios que continúan respecto a la RBU del período anterior, 
-        •	Potenciales usuarios libres producto del cotejo realizado que podrán participar en el proceso de la elaboración de la RBU, 
-        •	Usuarios que serán suspendidos o desafiliados y 
-        •	Adultos mayores no potenciales",
+     """P- Se realizó la carga de la versión final del pre padrón en la carpeta compartida, de acuerdo al detalle siguiente:
+• Usuarios que continúan respecto a la RBU del período anterior
+• Potenciales usuarios libres producto del cotejo realizado
+• Usuarios que serán suspendidos o desafiliados
+• Adultos mayores no potenciales""",
      "Q- Se cargó en el SISOPE la lista de fallecidos remitidas por la RENIEC e identificadas por la UT en las visitas domiciliarias",
      "R- Se generó la lista previa a la RBU con información nominal del Ubigeo y DNI, de acuerdo con los siguientes listados nominales: Registros de PROPUESTA DE NUEVOS INGRESOS, Registro de SUSPENDIDOS y DESAFILIADOS",
      "S- Se registró en el SISOPE la propuesta de RBU y se generó el archivo PADRON FINAL que comprende: Registro de PROPUESTA DE NUEVOS INGRESOS, Registro de SUSPENDIDOS y DESAFILIADOS",
