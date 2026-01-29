@@ -7,7 +7,11 @@ ARCHIVO_EXCEL = "registros_monitoreo.xlsx"
 
 st.set_page_config(page_title="Ficha de Monitoreo", layout="wide")
 
-st.title("📋 Ficha de Monitoreo a la gestión de la entrega de la pensión no contributiva")
+st.markdown(
+    "<h1 style='text-align: center;'>📋 Ficha de Monitoreo a la gestión de la entrega de la pensión no contributiva</h1>",
+    unsafe_allow_html=True
+)
+st.divider()
 
 # =====================
 # DATOS GENERALES
