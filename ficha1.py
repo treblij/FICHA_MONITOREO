@@ -7,27 +7,46 @@ ARCHIVO_EXCEL = "registros_monitoreo.xlsx"
 
 st.set_page_config(page_title="Ficha de Monitoreo", layout="wide")
 
+# =========================
+# FUNCIONES AUXILIARES
+# =========================
+def titulo_cinta(texto):
+    """Muestra un título con fondo celeste tipo 'cinta'."""
+    st.markdown(f"""
+    <div style="
+        background-color: #a0d8f1;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 20px;
+        font-weight: bold;
+    ">
+    {texto}
+    </div>
+    """, unsafe_allow_html=True)
+
+# =========================
+# TÍTULO PRINCIPAL
+# =========================
 st.markdown(
     "<h1 style='text-align: center;'>📋 Ficha de Monitoreo a la gestión de la entrega de la pensión no contributiva</h1>",
     unsafe_allow_html=True
 )
 st.divider()
 
-# =====================
+# =========================
 # DATOS GENERALES
-# =====================
-st.subheader("Datos Generales")
+# =========================
+titulo_cinta("Datos Generales")
 
 col1, col2 = st.columns(2)
 with col1:
     unidad = st.selectbox(
         "Unidad(es) Orgánica(s)",
         ["", "UT-LIMA", "UT-LIMA PROV", "UT-CALLAO"],
-        index=0  # asegura que empiece en la opción vacía
+        index=0
     )
-
 with col2:
-    fecha_supervision = st.date_input("Fecha(s) de Supervisión")
+    fecha_supervision = st.date_input("Fecha(s) de Supervisión", max_value=datetime.today())
 
 nombre = st.text_input("Apellidos y Nombres del entrevistado")
 dni = st.text_input("DNI")
@@ -35,11 +54,11 @@ cargo = st.text_input("Cargo")
 
 st.divider()
 
-# =====================
+# =========================
 # ACTIVIDADES
-# =====================
-st.subheader("Actividad")
-st.subheader("Proceso de Afiliación de Usuarios y generación de RBU")
+# =========================
+titulo_cinta("Actividad")
+titulo_cinta("Proceso de Afiliación de Usuarios y generación de RBU")
 
 actividades = [
     "A- Se elaboró el informe con la propuesta del cronograma anual para la entrega de la subvención monetaria (RBU)",
@@ -79,7 +98,7 @@ for i, act in enumerate(actividades):
     with col2:
         respuesta = st.selectbox(
             "Resultado",
-            ["", "SI", "NO", "NA"],  # Valor en blanco por defecto
+            ["", "SI", "NO", "NA"],
             key=f"resultado_{i}"
         )
     with col3:
@@ -87,7 +106,6 @@ for i, act in enumerate(actividades):
             "Observación",
             key=f"obs_{i}"
         )
-
     respuestas.append({
         "Actividad": act,
         "Resultado": respuesta,
@@ -96,33 +114,40 @@ for i, act in enumerate(actividades):
 
 st.divider()
 
-# =====================
+# =========================
 # GUARDAR INFORMACIÓN
-# =====================
+# =========================
+titulo_cinta("Guardar Información")
+
 if st.button("💾 Guardar información"):
-    filas = []
-
-    for r in respuestas:
-        filas.append({
-            "Fecha Registro": datetime.now(),
-            "Unidad Organica": unidad,
-            "Fecha Supervision": fecha_supervision,
-            "Entrevistado": nombre,
-            "DNI": dni,
-            "Cargo": cargo,
-            "Actividad": r["Actividad"],
-            "Resultado": r["Resultado"],
-            "Observacion": r["Observacion"]
-        })
-
-    df_nuevo = pd.DataFrame(filas)
-
-    if os.path.exists(ARCHIVO_EXCEL):
-        df_existente = pd.read_excel(ARCHIVO_EXCEL, engine="openpyxl")
-        df_final = pd.concat([df_existente, df_nuevo], ignore_index=True)
+    # Validación básica de datos
+    if not unidad or not nombre or not dni or not cargo:
+        st.warning("⚠️ Por favor, complete todos los datos generales antes de guardar.")
     else:
-        df_final = df_nuevo
+        filas = []
+        for r in respuestas:
+            filas.append({
+                "ID Registro": f"{dni}_{datetime.now().strftime('%Y%m%d%H%M%S')}",
+                "Fecha Registro": datetime.now(),
+                "Unidad Organica": unidad,
+                "Fecha Supervision": fecha_supervision.strftime("%d/%m/%Y"),
+                "Entrevistado": nombre,
+                "DNI": dni,
+                "Cargo": cargo,
+                "Actividad": r["Actividad"],
+                "Resultado": r["Resultado"],
+                "Observacion": r["Observacion"]
+            })
 
-    df_final.to_excel(ARCHIVO_EXCEL, index=False, engine="openpyxl")
+        df_nuevo = pd.DataFrame(filas)
 
-    st.success("✅ Información guardada correctamente en el archivo Excel")
+        if os.path.exists(ARCHIVO_EXCEL):
+            df_existente = pd.read_excel(ARCHIVO_EXCEL, engine="openpyxl")
+            df_final = pd.concat([df_existente, df_nuevo], ignore_index=True)
+        else:
+            df_final = df_nuevo
+
+        df_final.to_excel(ARCHIVO_EXCEL, index=False, engine="openpyxl")
+
+        st.success(f"✅ Información guardada correctamente. Se registraron {len(df_nuevo)} filas.")
+        st.dataframe(df_nuevo)
