@@ -3,6 +3,9 @@ import pandas as pd
 import os
 from datetime import datetime
 
+import pip
+pip.main(["install","openpyxl"])
+
 ARCHIVO_EXCEL = "registros_monitoreo.xlsx"
 
 st.set_page_config(page_title="Ficha de Monitoreo", layout="wide")
