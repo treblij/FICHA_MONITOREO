@@ -18,8 +18,10 @@ col1, col2 = st.columns(2)
 with col1:
     unidad = st.selectbox(
         "Unidad(es) Orgánica(s)",
-        ["UT-LIMA", "UT-LIMA PROV", "UT-CALLAO"]
+        ["", "UT-LIMA", "UT-LIMA PROV", "UT-CALLAO"],
+        index=0  # asegura que empiece en la opción vacía
     )
+
 with col2:
     fecha_supervision = st.date_input("Fecha(s) de Supervisión")
 
