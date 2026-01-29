@@ -3,14 +3,11 @@ import pandas as pd
 import os
 from datetime import datetime
 
-import pip
-pip.main(["install","openpyxl"])
-
 ARCHIVO_EXCEL = "registros_monitoreo.xlsx"
 
 st.set_page_config(page_title="Ficha de Monitoreo", layout="wide")
 
-st.title("📋 Ficha de Monitoreo a la gestion de la entrega de la pension no contributiva")
+st.title("📋 Ficha de Monitoreo a la gestión de la entrega de la pensión no contributiva")
 
 # =====================
 # DATOS GENERALES
@@ -30,58 +27,56 @@ cargo = st.text_input("Cargo")
 st.divider()
 
 # =====================
-# ACTIVIDADES (ejemplo)
+# ACTIVIDADES
 # =====================
 st.subheader("Actividad")
 st.subheader("Proceso de Afiliación de Usuarios y generación de RBU")
 
 actividades = [
-    
-     "A- Se elaboró el informe con la propuesta del cronograma anual para la entrega de la subvención monetaria (RBU)",
-     "B- Se solicitó a la ONP la relación de no pensionistas en condición de pobreza afiliados al Sistema Nacional de Pensiones, para solicitar los cotejos a las entidades externas",
-     "C- Se solicitó a UTI la generación de los archivos de cotejo, para solicitar el cotejo a las entidades externas",
-     "D- Se solicitó a las entidades externas (RENIEC, ONP, SIS, ESSALUD, SBS, otros), la información para el cotejo masivo", 
-     "E- Se solicitó al OFIS el PGH (RIS) con la información actualizada de la CSE",
-     "F- Se recibió la respuesta con los archivos de cotejo masivo de todas las entidades externas", 
-     "G- Se realizó la carga de los cotejos recibidos por las entidades externas, a la carpeta compartida con la UTI", 
-     "H- Se realizó la carga del preliminar del pre padrón en la carpeta compartida, para la apertura de cuentas",
-     "I- Se gestionó la apertura de cuentas de los potenciales usuarios",
-     "J- Se emitió el informe de solicitud de terceros autorizados para la emisión de la RDE", 
-     "K- Se revisaron las Solicitudes de los expedientes de vulnerabilidad adicional (VA)",
-     "L- Se remitió a la UTI la relación de usuarios sin movimiento de cuentas en 12 meses", 
-     "M- Se realizó la generación y carga del PRE PADRON en la carpeta compartida, luego del cierre del SISOPE", 
-     "N- Se remitió a la UO el término del proceso del PRE-PADRON (cotejo masivo del PGH con la información de las entidades públicas)", 
-     "O- Se remitió a la UTI el correo de validación del PRE PADRON",
-     """P- Se realizó la carga de la versión final del pre padrón en la carpeta compartida, de acuerdo al detalle siguiente:
+    "A- Se elaboró el informe con la propuesta del cronograma anual para la entrega de la subvención monetaria (RBU)",
+    "B- Se solicitó a la ONP la relación de no pensionistas en condición de pobreza afiliados al Sistema Nacional de Pensiones, para solicitar los cotejos a las entidades externas",
+    "C- Se solicitó a UTI la generación de los archivos de cotejo, para solicitar el cotejo a las entidades externas",
+    "D- Se solicitó a las entidades externas (RENIEC, ONP, SIS, ESSALUD, SBS, otros), la información para el cotejo masivo", 
+    "E- Se solicitó al OFIS el PGH (RIS) con la información actualizada de la CSE",
+    "F- Se recibió la respuesta con los archivos de cotejo masivo de todas las entidades externas", 
+    "G- Se realizó la carga de los cotejos recibidos por las entidades externas, a la carpeta compartida con la UTI", 
+    "H- Se realizó la carga del preliminar del pre padrón en la carpeta compartida, para la apertura de cuentas",
+    "I- Se gestionó la apertura de cuentas de los potenciales usuarios",
+    "J- Se emitió el informe de solicitud de terceros autorizados para la emisión de la RDE", 
+    "K- Se revisaron las Solicitudes de los expedientes de vulnerabilidad adicional (VA)",
+    "L- Se remitió a la UTI la relación de usuarios sin movimiento de cuentas en 12 meses", 
+    "M- Se realizó la generación y carga del PRE PADRON en la carpeta compartida, luego del cierre del SISOPE", 
+    "N- Se remitió a la UO el término del proceso del PRE-PADRON (cotejo masivo del PGH con la información de las entidades públicas)", 
+    "O- Se remitió a la UTI el correo de validación del PRE PADRON",
+    """P- Se realizó la carga de la versión final del pre padrón en la carpeta compartida, de acuerdo al detalle siguiente:
 • Usuarios que continúan respecto a la RBU del período anterior
 • Potenciales usuarios libres producto del cotejo realizado
 • Usuarios que serán suspendidos o desafiliados
 • Adultos mayores no potenciales""",
-     "Q- Se cargó en el SISOPE la lista de fallecidos remitidas por la RENIEC e identificadas por la UT en las visitas domiciliarias",
-     "R- Se generó la lista previa a la RBU con información nominal del Ubigeo y DNI, de acuerdo con los siguientes listados nominales: Registros de PROPUESTA DE NUEVOS INGRESOS, Registro de SUSPENDIDOS y DESAFILIADOS",
-     "S- Se registró en el SISOPE la propuesta de RBU y se generó el archivo PADRON FINAL que comprende: Registro de PROPUESTA DE NUEVOS INGRESOS, Registro de SUSPENDIDOS y DESAFILIADOS",
-     "T- Se confirmó a la UTI la revisión final del padrón generado y registrado en la base de datos del sistema",
-     "U- Se remitió a la UO el memorando informando el desarrollo y participación en el procesamiento de elaboración de la RBU", 
-     "V- Se emitieron el Informe técnico que sustenta la propuesta de RBU e informe que sustenta las modalidades de cobro, aperturas de cuenta y monto a transferir, incluyendo la Certificación de Crédito Presupuestal para el trámite correspondiente",
-
+    "Q- Se cargó en el SISOPE la lista de fallecidos remitidas por la RENIEC e identificadas por la UT en las visitas domiciliarias",
+    "R- Se generó la lista previa a la RBU con información nominal del Ubigeo y DNI, de acuerdo con los siguientes listados nominales: Registros de PROPUESTA DE NUEVOS INGRESOS, Registro de SUSPENDIDOS y DESAFILIADOS",
+    "S- Se registró en el SISOPE la propuesta de RBU y se generó el archivo PADRON FINAL que comprende: Registro de PROPUESTA DE NUEVOS INGRESOS, Registro de SUSPENDIDOS y DESAFILIADOS",
+    "T- Se confirmó a la UTI la revisión final del padrón generado y registrado en la base de datos del sistema",
+    "U- Se remitió a la UO el memorando informando el desarrollo y participación en el procesamiento de elaboración de la RBU", 
+    "V- Se emitieron el Informe técnico que sustenta la propuesta de RBU e informe que sustenta las modalidades de cobro, aperturas de cuenta y monto a transferir, incluyendo la Certificación de Crédito Presupuestal para el trámite correspondiente",
 ]
 
 respuestas = []
 
-for act in actividades:
+for i, act in enumerate(actividades):
     col1, col2, col3 = st.columns([6, 2, 4])
     with col1:
         st.write(act)
     with col2:
         respuesta = st.selectbox(
             "Resultado",
-            ["SI", "NO", "NA"],
-            key=act
+            ["", "SI", "NO", "NA"],  # Valor en blanco por defecto
+            key=f"resultado_{i}"
         )
     with col3:
         observacion = st.text_input(
             "Observación",
-            key=f"obs_{act}"
+            key=f"obs_{i}"
         )
 
     respuestas.append({
@@ -93,7 +88,7 @@ for act in actividades:
 st.divider()
 
 # =====================
-# GUARDAR
+# GUARDAR INFORMACIÓN
 # =====================
 if st.button("💾 Guardar información"):
     filas = []
@@ -114,12 +109,11 @@ if st.button("💾 Guardar información"):
     df_nuevo = pd.DataFrame(filas)
 
     if os.path.exists(ARCHIVO_EXCEL):
-        df_existente = pd.read_excel(ARCHIVO_EXCEL)
+        df_existente = pd.read_excel(ARCHIVO_EXCEL, engine="openpyxl")
         df_final = pd.concat([df_existente, df_nuevo], ignore_index=True)
     else:
         df_final = df_nuevo
 
-    df_final.to_excel(ARCHIVO_EXCEL, index=False)
+    df_final.to_excel(ARCHIVO_EXCEL, index=False, engine="openpyxl")
 
     st.success("✅ Información guardada correctamente en el archivo Excel")
-
