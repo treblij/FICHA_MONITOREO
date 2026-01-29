@@ -7,7 +7,7 @@ ARCHIVO_EXCEL = "registros_monitoreo.xlsx"
 
 st.set_page_config(page_title="Ficha de Monitoreo", layout="wide")
 
-st.title("📋 Ficha de Monitoreo – Pensión No Contributiva")
+st.title("📋 Ficha de Monitoreo a la gestion de la entrega de la pension no contributiva")
 
 # =====================
 # DATOS GENERALES
@@ -29,13 +29,14 @@ st.divider()
 # =====================
 # ACTIVIDADES (ejemplo)
 # =====================
-st.subheader("Actividades")
+st.subheader("Actividad")
+st.subheader("Proceso de Afiliación de Usuarios y generación de RBU")
 
 actividades = [
-    "Se elaboró el informe con la propuesta del cronograma anual (RBU)",
-    "Se solicitó a la ONP la relación de no pensionistas",
-    "Se solicitó a la UTI la generación de archivos de cotejo",
-    "Se solicitó información a entidades externas",
+    "A- Se elaboró el informe con la propuesta del cronograma anual (RBU)",
+    "B- Se solicitó a la ONP la relación de no pensionistas",
+    "C- Se solicitó a la UTI la generación de archivos de cotejo",
+    "D- Se solicitó información a entidades externas",
 ]
 
 respuestas = []
