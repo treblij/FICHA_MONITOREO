@@ -102,7 +102,7 @@ for i, act in enumerate(actividades):
     with col2:
         respuesta = st.selectbox(
             "Resultado",
-            ["", "SI", "NO", "NA"],
+            ["", "SI", "NO", "No corresponde"],
             key=f"resultado_{i}"
         )
     with col3:
