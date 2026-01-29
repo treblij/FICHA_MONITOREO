@@ -58,6 +58,10 @@ st.divider()
 # ACTIVIDADES
 # =========================
 titulo_cinta("Actividad")
+
+# Espacio entre títulos
+st.markdown("<br>", unsafe_allow_html=True)
+
 titulo_cinta("Proceso de Afiliación de Usuarios y generación de RBU")
 
 actividades = [
