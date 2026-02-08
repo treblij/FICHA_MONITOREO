@@ -161,15 +161,13 @@ else:
         ]
     }
 
-    # Diccionario para almacenar las selecciones
+    # Diccionario para almacenar las selecciones de subactividades
     respuestas = {}
 
     for actividad_principal, subactividades in actividades_dict.items():
         st.markdown(f"**{actividad_principal}**")
-        respuestas[actividad_principal] = []
-        for i, sub_act in enumerate(subactividades):
-            respuesta = st.selectbox(sub_act, ["", "SI", "NO", "No corresponde"], key=f"{actividad_principal}_{i}")
-            respuestas[actividad_principal].append({"Subactividad": sub_act, "Respuesta": respuesta})
+        sub_seleccionada = st.selectbox(f"Seleccione subactividad de {actividad_principal}", [""] + subactividades, key=actividad_principal)
+        respuestas[actividad_principal] = sub_seleccionada
 
     # Otras actividades (texto libre)
     otras_actividades = st.text_area("Otras Actividades", height=100)
@@ -180,21 +178,19 @@ else:
             st.warning("⚠️ Complete todos los datos generales antes de guardar.")
         else:
             filas = []
-            for actividad, subacts in respuestas.items():
-                for sub in subacts:
-                    if sub["Respuesta"]:  # Solo guardar si se seleccionó algo
-                        fila = {
-                            "UT": ut,
-                            "Fecha": fecha.strftime("%d/%m/%Y"),
-                            "Código de Usuario": codigo_usuario,
-                            "Apellidos y Nombres": nombres,
-                            "Cargo/Puesto": cargo,
-                            "Actividad Principal": actividad,
-                            "Subactividad": sub["Subactividad"],
-                            "Respuesta": sub["Respuesta"],
-                            "Otras Actividades": otras_actividades
-                        }
-                        filas.append(fila)
+            for actividad, sub in respuestas.items():
+                if sub:  # Solo guardar si se seleccionó alguna subactividad
+                    fila = {
+                        "UT": ut,
+                        "Fecha": fecha.strftime("%d/%m/%Y"),
+                        "Código de Usuario": codigo_usuario,
+                        "Apellidos y Nombres": nombres,
+                        "Cargo/Puesto": cargo,
+                        "Actividad Principal": actividad,
+                        "Subactividad": sub,
+                        "Otras Actividades": otras_actividades
+                    }
+                    filas.append(fila)
 
             if filas:
                 df_nuevo = pd.DataFrame(filas)
@@ -208,4 +204,4 @@ else:
                 st.dataframe(df_nuevo)
                 st.experimental_rerun()
             else:
-                st.warning("⚠️ No se seleccionó ninguna respuesta para guardar.")
+                st.warning("⚠️ No se seleccionó ninguna subactividad para guardar.")
