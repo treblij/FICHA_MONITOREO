@@ -142,13 +142,10 @@ actividades = [
 ]
 
 respuestas = []
-total_actividades = sum(len(a[1]) for a in actividades)
-contador = 0
 
 for seccion, acts in actividades:
     with st.expander(seccion, expanded=True):
         for i, act in enumerate(acts):
-            contador += 1
             with st.container():
                 st.markdown("<div class='tarjeta'>", unsafe_allow_html=True)
                 col1, col2, col3 = st.columns([6, 2, 4])
@@ -170,9 +167,6 @@ for seccion, acts in actividades:
                 })
 
                 st.markdown("</div>", unsafe_allow_html=True)
-
-            # Barra de progreso
-            st.progress(contador / total_actividades)
 
 # =========================
 # GUARDAR INFORMACIÓN
