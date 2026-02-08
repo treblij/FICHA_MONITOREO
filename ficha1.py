@@ -112,7 +112,7 @@ else:
     titulo_cinta("Actividades")
     actividades_dict = {
         "BIENESTAR": [
-            "Activo",
+            "ACTIVO",
             "VACACIONES",
             "LICENCIA SINDICAL",
             "EXAMEN MEDICO",
@@ -120,9 +120,9 @@ else:
         "VISITAS": [
             "VISITAS DOMICILIARIAS A USUARIOS REGULARES",
             "BARRIDOS",
-            "VISITAS A USUARIOS CON EMPREDIMEITNOS",
+            "VISITAS A USUARIOS CON EMPREDIMITOS",
             "VISITAS A TERCEROS AUTORIZADOS",
-            "VISITAS DE CONVOCATORIA DE TE ACOMPAÑO",
+            "VISITAS DE CONVOCATORIA TE ACOMPAÑO",
             "CONVOCATORIA PARA CAMPAÑAS",
             "VISITAS REMOTAS"
         ],
