@@ -3,11 +3,11 @@ import pandas as pd
 import os
 from datetime import datetime
 
-ARCHIVO_EXCEL = "registros_ficha_con_combos.xlsx"
+ARCHIVO_EXCEL = "registros_ficha_completa.xlsx"
 
-st.set_page_config(page_title="Ficha con combos por actividad", layout="wide")
+st.set_page_config(page_title="Ficha de Actividades UT", layout="wide")
 
-# Login simple
+# ======= LOGIN SIMPLE =======
 USUARIOS = {"admin":"1234", "usuario1":"abcd"}
 
 def login():
@@ -19,6 +19,7 @@ def login():
             st.session_state["login"] = True
             st.session_state["usuario"] = usuario
             st.success(f"Bienvenido {usuario} ✅")
+            st.experimental_rerun()
         else:
             st.error("Usuario o contraseña incorrectos ❌")
 
@@ -28,76 +29,184 @@ if "login" not in st.session_state:
 if not st.session_state["login"]:
     login()
 else:
-    st.title("Ficha de Ingreso con combos por actividad")
 
-    # Datos generales
-    col1, col2, col3, col4, col5 = st.columns([1,1,1,1,1])
-    with col1:
-        ut = st.selectbox("UT", ["", "UT-LIMA", "UT-LIMA PROV", "UT-CALLAO"])
-    with col2:
-        fecha = st.date_input("Fecha", max_value=datetime.today())
-    with col3:
-        codigo_usuario = st.text_input("Código de Usuario")
-    with col4:
-        nombres = st.text_input("Apellidos y Nombres")
-    with col5:
-        cargo = st.selectbox("Cargo/Puesto", ["", "Supervisor", "Coordinador", "Asistente", "Otro"])
+    # ====== ESTILOS CSS ======
+    st.markdown("""
+    <style>
+    .cinta {
+        background: linear-gradient(90deg, #1f77b4, #4fa3d1);
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 22px;
+        font-weight: 700;
+        color: white;
+        margin: 20px 0 10px 0;
+        text-align: center;
+    }
+    .tarjeta {
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        margin-bottom: 25px;
+    }
+    div[data-baseweb="select"] > div {
+        border-radius: 6px !important;
+    }
+    .stButton > button {
+        background-color: #1f77b4;
+        color: white;
+        font-weight: bold;
+        border-radius: 10px;
+        padding: 12px 25px;
+        border: none;
+        transition: all 0.2s ease-in-out;
+    }
+    .stButton > button:hover {
+        background-color: #155a8a;
+        transform: scale(1.05);
+    }
+    textarea {
+        border-radius: 6px !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-    st.markdown("---")
+    def titulo_cinta(texto):
+        st.markdown(f"<div class='cinta'>{texto}</div>", unsafe_allow_html=True)
 
-    # Actividades y combos
-    actividades = [
-        "ACTIVIDAD VISITAS 1",
-        "ACTIVIDAD VISITAS 2",
-        "ACTIVIDAD PAGO RBU",
-        "ACTIVIDAD MUNICIPALIDAD",
-        "ACTIVIDAD GABINETE",
-        "ACTIVIDAD BIENESTAR",
-        "ACTIVIDAD CAMPAÑAS",
-        "ACTIVIDAD REUNIONES"
-    ]
-    opciones = ["", "SI", "NO", "No corresponde"]
+    st.title("📋 Ficha de Registro de Actividades UT")
 
-    # Crear columnas para actividades + 1 para otras actividades
-    cols = st.columns(len(actividades) + 1)
+    # ====== DATOS GENERALES ======
+    titulo_cinta("Datos Generales")
+    with st.container():
+        st.markdown("<div class='tarjeta'>", unsafe_allow_html=True)
 
-    # Diccionario para almacenar respuestas
-    respuestas = {}
+        col1, col2, col3, col4, col5 = st.columns([1,1,1,1,1])
+        with col1:
+            ut = st.selectbox("UT", [
+                "",
+                "UT - AMAZONAS","UT - ANCASH","UT - APURIMAC","UT - AREQUIPA",
+                "UT - AYACUCHO","UT - CUSCO","UT - HUANCAVELICA","UT - HUANUCO",
+                "UT - ICA","UT - JUNIN","UT - LA LIBERTAD","UT - LAMBAYEQUE",
+                "UT - LIMA METROPOLITANA Y CALLAO","UT - LIMA PROVINCIAS","UT - LORETO",
+                "UT - MADRE DE DIOS","UT - MOQUEGUA","UT - PASCO","UT - PIURA",
+                "UT - PUNO","UT - SAN MARTIN","UT - TACNA","UT - TUMBES","UT - UCAYALI"
+            ])
+        with col2:
+            fecha = st.date_input("Fecha", max_value=datetime.today())
+        with col3:
+            codigo_usuario = st.text_input("Código de Usuario")
+        with col4:
+            nombres = st.text_input("Apellidos y Nombres")
+        with col5:
+            cargo = st.selectbox("Cargo/Puesto", ["", "Supervisor", "Coordinador", "Asistente", "Otro"])
 
-    # Mostrar selectboxes para cada actividad en columnas
-    for i, act in enumerate(actividades):
-        with cols[i]:
-            respuestas[act] = st.selectbox(act, opciones, key=f"res_{i}")
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    # Última columna para "Otras actividades"
-    with cols[-1]:
-        otras = st.text_area("OTRAS ACTIVIDADES", height=100)
+    # ====== ACTIVIDADES ======
+    titulo_cinta("Actividades")
 
-    # Guardar botón
-    if st.button("💾 Guardar registro"):
-        # Validar campos obligatorios
-        if not ut or not codigo_usuario or not nombres or not cargo:
-            st.warning("⚠️ Complete todos los datos generales antes de guardar.")
+    actividades_dict = {
+        "VISITAS": [
+            "VISITAS DOMICILIARIAS A USUARIOS REGULARES",
+            "BARRIDOS",
+            "VISITAS A USUARIOS CON EMPREDIMEITNOS",
+            "VISITAS A TERCEROS AUTORIZADOS",
+            "VISITAS DE CONVOCATORIA DE TE ACOMPAÑO",
+            "CONVOCATORIA PARA CAMPAÑAS",
+            "VISITAS REMOTAS"
+        ],
+        "PAGO RBU": [
+            "SUPERVISION Y ACOMPAÑAMIENTO DEL PAGO",
+            "TARJETIZACION",
+            "SUPERVISION ETV"
+        ],
+        "MUNICIPALIDAD": [
+            "ATENCION EN ULE",
+            "PARTICIPACION EN IAL"
+        ],
+        "GABINETE": [
+            "REGISTRO DE DJ",
+            "ELABORACION DE INFORMES, PRIORIZACIONES Y OTROS",
+            "GABINETE TE ACOMPAÑO",
+            "MAPEO DE USUARIOS",
+            "SUPERVISION DE PROMOTORES",
+            "APOYO UT",
+            "REGISTRO DE EMPRENDIMIENTOS",
+            "REGISTRO DE DONACIONES",
+            "DESPLAZAMIENTO A COMISIONES",
+            "ATENCION AL USUARIO Y TRAMITES",
+            "ASISTENCIA Y CAPACITACION A ACTORES EXTERNOS",
+            "CAPACITACIONES AL PERSONAL",
+            "REGISTRO DE SABERES",
+            "ASISTENCIA TECNICA SABERES PRODUCTIVOS"
+        ],
+        "BIENESTAR": [
+            "VACACIONES",
+            "LICENCIA SINDICAL",
+            "EXAMEN MEDICO",
+            "LICENCIA MEDICA"
+        ],
+        "CAMPAÑAS": [
+            "PARTICIPACION EN EMERGENCIAS (INCENDIOS)",
+            "AVANZADA PARA CAMPAÑAS",
+            "PARTICIPACION EN CAMPAÑAS DE ENTREGA DE DONACIONES",
+            "PARTICIPACION EN TE ACOMPAÑO",
+            "DIALOGOS DE SABERES",
+            "ENCUENTROS DE SABERES PRODUCTIVOS",
+            "TRASMISION INTER GENERACIONAL",
+            "FERIAS DE EMPRENDIMIENTOS"
+        ],
+        "REUNIONES": [
+            "REUNION EQUIPO UT",
+            "REUNION CON SECTOR SALUD DIRESA, RIS IPRESS",
+            "REUNION SABERES",
+            "REUNION CON GL"
+        ],
+        "OTRAS ACTIVIDADES": []  # Texto libre
+    }
+
+    # ====== INPUT ACTIVIDADES ======
+    actividad_principal = st.selectbox("Seleccione Actividad Principal", [""] + list(actividades_dict.keys()))
+
+    if actividad_principal and actividad_principal != "OTRAS ACTIVIDADES":
+        sub_actividades = actividades_dict[actividad_principal]
+        sub_actividad = st.selectbox("Seleccione Sub-Actividad", [""] + sub_actividades)
+        texto_otras = ""
+    elif actividad_principal == "OTRAS ACTIVIDADES":
+        texto_otras = st.text_area("Ingrese texto para Otras Actividades")
+        sub_actividad = ""
+    else:
+        sub_actividad = ""
+        texto_otras = ""
+
+    # ====== BOTÓN GUARDAR ======
+    campos_completos = ut and codigo_usuario and nombres and cargo and actividad_principal
+    btn_guardar = st.button("💾 Guardar registro", disabled=not campos_completos)
+
+    if btn_guardar:
+        registro = {
+            "UT": ut,
+            "Fecha": fecha.strftime("%d/%m/%Y"),
+            "Código de Usuario": codigo_usuario,
+            "Apellidos y Nombres": nombres,
+            "Cargo/Puesto": cargo,
+            "Actividad Principal": actividad_principal,
+            "Subactividad": sub_actividad,
+            "Otras Actividades": texto_otras
+        }
+
+        df_nuevo = pd.DataFrame([registro])
+        if os.path.exists(ARCHIVO_EXCEL):
+            df_existente = pd.read_excel(ARCHIVO_EXCEL)
+            df_final = pd.concat([df_existente, df_nuevo], ignore_index=True)
         else:
-            registro = {
-                "UT": ut,
-                "Fecha": fecha.strftime("%d/%m/%Y"),
-                "Código de Usuario": codigo_usuario,
-                "Apellidos y Nombres": nombres,
-                "Cargo/Puesto": cargo,
-                "Otras Actividades": otras
-            }
-            # Agregar actividades y sus respuestas
-            for act in actividades:
-                registro[act] = respuestas.get(act, "")
+            df_final = df_nuevo
 
-            # Guardar en Excel
-            df_nuevo = pd.DataFrame([registro])
-            if os.path.exists(ARCHIVO_EXCEL):
-                df_existente = pd.read_excel(ARCHIVO_EXCEL)
-                df_final = pd.concat([df_existente, df_nuevo], ignore_index=True)
-            else:
-                df_final = df_nuevo
-            df_final.to_excel(ARCHIVO_EXCEL, index=False)
-            st.success("✅ Registro guardado correctamente")
-            st.dataframe(df_nuevo)
+        df_final.to_excel(ARCHIVO_EXCEL, index=False)
+        st.success("✅ Registro guardado correctamente")
+        st.dataframe(df_nuevo)
+
+        # Limpiar formulario
+        st.experimental_rerun()
