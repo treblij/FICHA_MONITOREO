@@ -100,7 +100,11 @@ else:
         with col4:
             nombres = st.text_input("Apellidos y Nombres")
         with col5:
-            cargo = st.selectbox("Cargo/Puesto", ["", "Supervisor", "Coordinador", "Asistente", "Otro"])
+            cargo = st.selectbox("Cargo/Puesto", ["", "CT-Coordinador Territorial", 
+                                                      "PRO-Promotor", 
+                                                      "ATE-Asistente Técnico de Saberes Productivos", 
+                                                      "Gestor de Acompaño"
+                                                      "Otro"])
 
         st.markdown("</div>", unsafe_allow_html=True)
 
