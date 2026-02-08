@@ -103,14 +103,13 @@ else:
             cargo = st.selectbox("Cargo/Puesto", ["", "CT-Coordinador Territorial", 
                                                       "PRO-Promotor", 
                                                       "ATE-Asistente Técnico de Saberes Productivos", 
-                                                      "Gestor de Acompaño"
+                                                      "Gestor de Acompaño",
                                                       "Otro"])
 
         st.markdown("</div>", unsafe_allow_html=True)
 
     # ====== ACTIVIDADES ======
     titulo_cinta("Actividades")
-
     actividades_dict = {
         "VISITAS": [
             "VISITAS DOMICILIARIAS A USUARIOS REGULARES",
@@ -126,10 +125,7 @@ else:
             "TARJETIZACION",
             "SUPERVISION ETV"
         ],
-        "MUNICIPALIDAD": [
-            "ATENCION EN ULE",
-            "PARTICIPACION EN IAL"
-        ],
+        "MUNICIPALIDAD": ["ATENCION EN ULE","PARTICIPACION EN IAL"],
         "GABINETE": [
             "REGISTRO DE DJ",
             "ELABORACION DE INFORMES, PRIORIZACIONES Y OTROS",
@@ -146,12 +142,7 @@ else:
             "REGISTRO DE SABERES",
             "ASISTENCIA TECNICA SABERES PRODUCTIVOS"
         ],
-        "BIENESTAR": [
-            "VACACIONES",
-            "LICENCIA SINDICAL",
-            "EXAMEN MEDICO",
-            "LICENCIA MEDICA"
-        ],
+        "BIENESTAR": ["VACACIONES","LICENCIA SINDICAL","EXAMEN MEDICO","LICENCIA MEDICA"],
         "CAMPAÑAS": [
             "PARTICIPACION EN EMERGENCIAS (INCENDIOS)",
             "AVANZADA PARA CAMPAÑAS",
@@ -167,50 +158,54 @@ else:
             "REUNION CON SECTOR SALUD DIRESA, RIS IPRESS",
             "REUNION SABERES",
             "REUNION CON GL"
-        ],
-        "OTRAS ACTIVIDADES": []  # Texto libre
+        ]
     }
 
-    # ====== INPUT ACTIVIDADES ======
-    actividad_principal = st.selectbox("Seleccione Actividad Principal", [""] + list(actividades_dict.keys()))
+    # Diccionario para almacenar las selecciones
+    respuestas = {}
 
-    if actividad_principal and actividad_principal != "OTRAS ACTIVIDADES":
-        sub_actividades = actividades_dict[actividad_principal]
-        sub_actividad = st.selectbox("Seleccione Sub-Actividad", [""] + sub_actividades)
-        texto_otras = ""
-    elif actividad_principal == "OTRAS ACTIVIDADES":
-        texto_otras = st.text_area("Ingrese texto para Otras Actividades")
-        sub_actividad = ""
-    else:
-        sub_actividad = ""
-        texto_otras = ""
+    for actividad_principal, subactividades in actividades_dict.items():
+        st.markdown(f"**{actividad_principal}**")
+        respuestas[actividad_principal] = []
+        for i, sub_act in enumerate(subactividades):
+            respuesta = st.selectbox(sub_act, ["", "SI", "NO", "No corresponde"], key=f"{actividad_principal}_{i}")
+            respuestas[actividad_principal].append({"Subactividad": sub_act, "Respuesta": respuesta})
+
+    # Otras actividades (texto libre)
+    otras_actividades = st.text_area("Otras Actividades", height=100)
 
     # ====== BOTÓN GUARDAR ======
-    campos_completos = ut and codigo_usuario and nombres and cargo and actividad_principal
-    btn_guardar = st.button("💾 Guardar registro", disabled=not campos_completos)
-
-    if btn_guardar:
-        registro = {
-            "UT": ut,
-            "Fecha": fecha.strftime("%d/%m/%Y"),
-            "Código de Usuario": codigo_usuario,
-            "Apellidos y Nombres": nombres,
-            "Cargo/Puesto": cargo,
-            "Actividad Principal": actividad_principal,
-            "Subactividad": sub_actividad,
-            "Otras Actividades": texto_otras
-        }
-
-        df_nuevo = pd.DataFrame([registro])
-        if os.path.exists(ARCHIVO_EXCEL):
-            df_existente = pd.read_excel(ARCHIVO_EXCEL)
-            df_final = pd.concat([df_existente, df_nuevo], ignore_index=True)
+    if st.button("💾 Guardar registro"):
+        if not ut or not codigo_usuario or not nombres or not cargo:
+            st.warning("⚠️ Complete todos los datos generales antes de guardar.")
         else:
-            df_final = df_nuevo
+            filas = []
+            for actividad, subacts in respuestas.items():
+                for sub in subacts:
+                    if sub["Respuesta"]:  # Solo guardar si se seleccionó algo
+                        fila = {
+                            "UT": ut,
+                            "Fecha": fecha.strftime("%d/%m/%Y"),
+                            "Código de Usuario": codigo_usuario,
+                            "Apellidos y Nombres": nombres,
+                            "Cargo/Puesto": cargo,
+                            "Actividad Principal": actividad,
+                            "Subactividad": sub["Subactividad"],
+                            "Respuesta": sub["Respuesta"],
+                            "Otras Actividades": otras_actividades
+                        }
+                        filas.append(fila)
 
-        df_final.to_excel(ARCHIVO_EXCEL, index=False)
-        st.success("✅ Registro guardado correctamente")
-        st.dataframe(df_nuevo)
-
-        # Limpiar formulario
-        st.experimental_rerun()
+            if filas:
+                df_nuevo = pd.DataFrame(filas)
+                if os.path.exists(ARCHIVO_EXCEL):
+                    df_existente = pd.read_excel(ARCHIVO_EXCEL)
+                    df_final = pd.concat([df_existente, df_nuevo], ignore_index=True)
+                else:
+                    df_final = df_nuevo
+                df_final.to_excel(ARCHIVO_EXCEL, index=False)
+                st.success(f"✅ Se guardaron {len(filas)} registros correctamente")
+                st.dataframe(df_nuevo)
+                st.experimental_rerun()
+            else:
+                st.warning("⚠️ No se seleccionó ninguna respuesta para guardar.")
