@@ -7,22 +7,15 @@ from datetime import datetime
 # CONFIGURACIÓN
 # =========================
 ARCHIVO_EXCEL = "registros_monitoreo.xlsx"
-
-st.set_page_config(
-    page_title="Ficha de Monitoreo",
-    layout="wide"
-)
+st.set_page_config(page_title="Ficha de Monitoreo", layout="wide")
 
 # =========================
 # CSS GLOBAL
 # =========================
 st.markdown("""
 <style>
-
 /* Fondo general */
-.stApp {
-    background-color: #f4f6f9;
-}
+.stApp { background-color: #f4f6f9; }
 
 /* Cintas */
 .cinta {
@@ -44,15 +37,9 @@ st.markdown("""
     margin-bottom: 12px;
 }
 
-/* Inputs */
-input, textarea {
-    border-radius: 6px !important;
-}
-
-/* Select */
-div[data-baseweb="select"] > div {
-    border-radius: 6px;
-}
+/* Inputs y select */
+input, textarea { border-radius: 6px !important; }
+div[data-baseweb="select"] > div { border-radius: 6px; }
 
 /* Botón */
 .stButton > button {
@@ -63,18 +50,13 @@ div[data-baseweb="select"] > div {
     padding: 10px 20px;
     border: none;
 }
-
 .stButton > button:hover {
     background-color: #155a8a;
     transform: scale(1.02);
 }
 
 /* Tablas */
-thead tr th {
-    background-color: #1f77b4 !important;
-    color: white !important;
-}
-
+thead tr th { background-color: #1f77b4 !important; color: white !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -84,40 +66,36 @@ thead tr th {
 def titulo_cinta(texto):
     st.markdown(f"<div class='cinta'>{texto}</div>", unsafe_allow_html=True)
 
+def color_resultado(resultado):
+    if resultado == "SI": return "🟢 SI"
+    elif resultado == "NO": return "🔴 NO"
+    elif resultado == "No corresponde": return "⚪ No corresponde"
+    else: return ""
+
 # =========================
-# TÍTULO
+# TÍTULO PRINCIPAL
 # =========================
 st.markdown("""
-<h1 style="
-    text-align: center;
-    color: #1f77b4;
-    font-weight: 700;
-">
+<h1 style="text-align: center; color: #1f77b4; font-weight: 700;">
 📋 Ficha de Monitoreo a la gestión de la entrega de la pensión no contributiva
 </h1>
 """, unsafe_allow_html=True)
-
 st.divider()
 
 # =========================
 # DATOS GENERALES
 # =========================
 titulo_cinta("Datos Generales")
-
 with st.container():
     st.markdown("<div class='tarjeta'>", unsafe_allow_html=True)
 
     col1, col2 = st.columns(2)
     with col1:
         unidad = st.selectbox(
-            "Unidad(es) Orgánica(s)",
-            ["", "UT-LIMA", "UT-LIMA PROV", "UT-CALLAO"]
+            "Unidad(es) Orgánica(s)", ["", "UT-LIMA", "UT-LIMA PROV", "UT-CALLAO"]
         )
     with col2:
-        fecha_supervision = st.date_input(
-            "Fecha(s) de Supervisión",
-            max_value=datetime.today()
-        )
+        fecha_supervision = st.date_input("Fecha(s) de Supervisión", max_value=datetime.today())
 
     nombre = st.text_input("Apellidos y Nombres del entrevistado")
     dni = st.text_input("DNI")
@@ -128,68 +106,80 @@ with st.container():
 # =========================
 # ACTIVIDADES
 # =========================
-titulo_cinta("Proceso de Afiliación de Usuarios y generación de RBU")
+titulo_cinta("Actividades y Resultados")
 
 actividades = [
-    "A- Se elaboró el informe con la propuesta del cronograma anual para la entrega de la subvención monetaria (RBU)",
-    "B- Se solicitó a la ONP la relación de no pensionistas en condición de pobreza afiliados al SNP",
-    "C- Se solicitó a UTI la generación de los archivos de cotejo",
-    "D- Se solicitó a las entidades externas la información para el cotejo masivo",
-    "E- Se solicitó al OFIS el PGH (RIS) con información actualizada",
-    "F- Se recibió la respuesta de las entidades externas",
-    "G- Se cargaron los cotejos recibidos",
-    "H- Se cargó el preliminar del pre padrón",
-    "I- Se gestionó la apertura de cuentas",
-    "J- Se emitió el informe de solicitud de terceros autorizados",
-    "K- Se revisaron expedientes de vulnerabilidad adicional",
-    "L- Se remitió relación de usuarios sin movimiento",
-    "M- Se generó y cargó el PRE PADRON",
-    "N- Se informó el término del proceso del PRE PADRON",
-    "O- Se remitió correo de validación del PRE PADRON",
-    "P- Se cargó la versión final del pre padrón",
-    "Q- Se cargó lista de fallecidos",
-    "R- Se generó lista previa a la RBU",
-    "S- Se registró la propuesta de RBU",
-    "T- Se confirmó revisión final del padrón",
-    "U- Se remitió memorando del proceso",
-    "V- Se emitió informe técnico final"
+    ("Proceso de Afiliación", [
+        "A- Se elaboró el informe con la propuesta del cronograma anual",
+        "B- Se solicitó a la ONP la relación de no pensionistas en condición de pobreza",
+        "C- Se solicitó a UTI la generación de los archivos de cotejo"
+    ]),
+    ("Cotejos y Pre Padrón", [
+        "D- Se solicitó a las entidades externas la información para el cotejo masivo",
+        "E- Se solicitó al OFIS el PGH (RIS) con información actualizada",
+        "F- Se recibió la respuesta de las entidades externas",
+        "G- Se cargaron los cotejos recibidos",
+        "H- Se cargó el preliminar del pre padrón"
+    ]),
+    ("Apertura de Cuentas y RBU", [
+        "I- Se gestionó la apertura de cuentas",
+        "J- Se emitió el informe de solicitud de terceros autorizados",
+        "K- Se revisaron expedientes de vulnerabilidad adicional",
+        "L- Se remitió relación de usuarios sin movimiento",
+        "M- Se generó y cargó el PRE PADRON",
+        "N- Se informó el término del proceso del PRE PADRON",
+        "O- Se remitió correo de validación del PRE PADRON",
+        "P- Se cargó la versión final del pre padrón"
+    ]),
+    ("Cierre y Reportes", [
+        "Q- Se cargó lista de fallecidos",
+        "R- Se generó lista previa a la RBU",
+        "S- Se registró la propuesta de RBU",
+        "T- Se confirmó revisión final del padrón",
+        "U- Se remitió memorando del proceso",
+        "V- Se emitió informe técnico final"
+    ])
 ]
 
 respuestas = []
+total_actividades = sum(len(a[1]) for a in actividades)
+contador = 0
 
-for i, act in enumerate(actividades):
-    with st.container():
-        st.markdown("<div class='tarjeta'>", unsafe_allow_html=True)
+for seccion, acts in actividades:
+    with st.expander(seccion, expanded=True):
+        for i, act in enumerate(acts):
+            contador += 1
+            with st.container():
+                st.markdown("<div class='tarjeta'>", unsafe_allow_html=True)
+                col1, col2, col3 = st.columns([6, 2, 4])
+                with col1:
+                    st.write(act)
+                with col2:
+                    resultado = st.selectbox(
+                        "Resultado", ["", "SI", "NO", "No corresponde"], key=f"res_{seccion}_{i}"
+                    )
+                with col3:
+                    observacion = st.text_input(
+                        "Observación", key=f"obs_{seccion}_{i}"
+                    )
 
-        col1, col2, col3 = st.columns([6, 2, 4])
-        with col1:
-            st.write(act)
-        with col2:
-            resultado = st.selectbox(
-                "Resultado",
-                ["", "SI", "NO", "No corresponde"],
-                key=f"res_{i}"
-            )
-        with col3:
-            observacion = st.text_input(
-                "Observación",
-                key=f"obs_{i}"
-            )
+                respuestas.append({
+                    "Actividad": act,
+                    "Resultado": resultado,
+                    "Observacion": observacion
+                })
 
-        respuestas.append({
-            "Actividad": act,
-            "Resultado": resultado,
-            "Observacion": observacion
-        })
+                st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("</div>", unsafe_allow_html=True)
+            # Barra de progreso
+            st.progress(contador / total_actividades)
 
 # =========================
-# GUARDAR
+# GUARDAR INFORMACIÓN
 # =========================
 titulo_cinta("Guardar Información")
-
 if st.button("💾 Guardar información"):
+    # Validación básica
     if not unidad or not nombre or not dni or not cargo:
         st.warning("⚠️ Complete todos los datos generales.")
     else:
@@ -217,6 +207,5 @@ if st.button("💾 Guardar información"):
             df_final = df_nuevo
 
         df_final.to_excel(ARCHIVO_EXCEL, index=False)
-
         st.success(f"✅ Información guardada correctamente ({len(df_nuevo)} registros).")
         st.dataframe(df_nuevo)
